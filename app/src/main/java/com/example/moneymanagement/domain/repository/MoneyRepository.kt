@@ -8,6 +8,8 @@ interface MoneyRepository {
     fun getTransactions(): Flow<List<Transaction>>
     fun getSavings(): Flow<List<Saving>>
     suspend fun addTransaction(transaction: Transaction)
+    suspend fun addTransactions(transactions: List<Transaction>)
     suspend fun addSaving(saving: Saving)
     suspend fun updateSaving(saving: Saving)
+    suspend fun clearAllData()
 }

@@ -6,4 +6,10 @@
     </style>
 
     <style name="Theme.MoneyManagement" parent="Base.Theme.MoneyManagement" />
+
+    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
+        <item name="windowSplashScreenBackground">@color/white</item>
+        <item name="postSplashScreenTheme">@style/Theme.MoneyManagement</item>
+    </style>
 </resources>

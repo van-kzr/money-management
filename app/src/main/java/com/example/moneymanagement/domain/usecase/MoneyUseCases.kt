@@ -21,14 +21,18 @@ class AddTransactionUseCase(private val repository: MoneyRepository) {
         if (description.isBlank() || amount <= 0) return
         repository.addTransaction(Transaction(description = description, amount = amount, type = type, category = category))
     }
+
+    suspend fun addTransactions(transactions: List<Transaction>) {
+        repository.addTransactions(transactions)
+    }
 }
 
 class AddSavingUseCase(private val repository: MoneyRepository) {
-    suspend operator fun invoke(name: String, amount: Double, type: TransactionType) {
+    suspend operator fun invoke(name: String, amount: Double, target: Double, type: TransactionType) {
         if (name.isBlank() || amount <= 0) return
         
         // Add to savings aggregate
-        repository.addSaving(Saving(name = name, amount = amount, type = type))
+        repository.addSaving(Saving(name = name, amount = amount, targetAmount = target, type = type))
         
         // Add to individual history
         repository.addTransaction(Transaction(description = name, amount = amount, type = TransactionType.Saving, category = Category.OTHER))
@@ -51,10 +55,19 @@ class UpdateSavingUseCase(private val repository: MoneyRepository) {
     }
 }
 
+class ClearDataUseCase(private val repository: MoneyRepository) {
+    suspend operator fun invoke() {
+        repository.clearAllData()
+    }
+}
+
 data class MoneyUseCases(
     val getTransactions: GetTransactionsUseCase,
     val getSavings: GetSavingsUseCase,
     val addTransaction: AddTransactionUseCase,
     val addSaving: AddSavingUseCase,
-    val updateSaving: UpdateSavingUseCase
+    val updateSaving: UpdateSavingUseCase,
+    val exportTransactions: ExportTransactionsUseCase,
+    val importTransactions: ImportTransactionsUseCase = ImportTransactionsUseCase(),
+    val clearData: ClearDataUseCase
 )

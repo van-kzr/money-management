@@ -1,40 +1,53 @@
 package com.example.moneymanagement.data.repository
 
+import com.example.moneymanagement.data.local.MoneyDao
+import com.example.moneymanagement.data.mapper.toDomain
+import com.example.moneymanagement.data.mapper.toEntity
 import com.example.moneymanagement.domain.model.Saving
 import com.example.moneymanagement.domain.model.Transaction
 import com.example.moneymanagement.domain.repository.MoneyRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.map
 
-class MoneyRepositoryImpl : MoneyRepository {
-    private val _transactions = MutableStateFlow<List<Transaction>>(emptyList())
-    private val _savings = MutableStateFlow<List<Saving>>(emptyList())
+class MoneyRepositoryImpl(
+    private val dao: MoneyDao
+) : MoneyRepository {
 
-    override fun getTransactions(): Flow<List<Transaction>> = _transactions.asStateFlow()
-    override fun getSavings(): Flow<List<Saving>> = _savings.asStateFlow()
+    override fun getTransactions(): Flow<List<Transaction>> {
+        return dao.getTransactions().map { entities ->
+            entities.map { it.toDomain() }
+        }
+    }
+
+    override fun getSavings(): Flow<List<Saving>> {
+        return dao.getSavings().map { entities ->
+            entities.map { it.toDomain() }
+        }
+    }
 
     override suspend fun addTransaction(transaction: Transaction) {
-        _transactions.update { (listOf(transaction) + it) }
+        dao.insertTransaction(transaction.toEntity())
+    }
+
+    override suspend fun addTransactions(transactions: List<Transaction>) {
+        dao.insertTransactions(transactions.map { it.toEntity() })
     }
 
     override suspend fun addSaving(saving: Saving) {
-        _savings.update { currentSavings ->
-            val index = currentSavings.indexOfFirst { it.name.equals(saving.name, ignoreCase = true) }
-            if (index != -1) {
-                currentSavings.mapIndexed { i, s ->
-                    if (i == index) s.copy(amount = s.amount + saving.amount) else s
-                }
-            } else {
-                listOf(saving) + currentSavings
-            }
+        val existingSaving = dao.getSavingByName(saving.name)
+        if (existingSaving != null) {
+            dao.updateSaving(existingSaving.copy(amount = existingSaving.amount + saving.amount))
+        } else {
+            dao.insertSaving(saving.toEntity())
         }
     }
 
     override suspend fun updateSaving(saving: Saving) {
-        _savings.update { currentSavings ->
-            currentSavings.map { if (it.id == saving.id) saving else it }
-        }
+        dao.updateSaving(saving.toEntity())
+    }
+
+    override suspend fun clearAllData() {
+        dao.clearTransactions()
+        dao.clearSavings()
     }
 }
