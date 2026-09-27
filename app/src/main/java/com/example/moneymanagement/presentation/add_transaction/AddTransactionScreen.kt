@@ -62,7 +62,7 @@ fun AddTransactionScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF8F9FA))
+            .background(MaterialTheme.colorScheme.background)
             .verticalScroll(rememberScrollState())
     ) {
         // Header
@@ -83,8 +83,8 @@ fun AddTransactionScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(48.dp)
-                    .background(Color(0xFFE9ECEF), RoundedCornerShape(24.dp))
+                    .height(56.dp)
+                    .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f), RoundedCornerShape(28.dp))
                     .padding(4.dp)
             ) {
                 listOf(
@@ -98,7 +98,7 @@ fun AddTransactionScreen(
                             .fillMaxHeight()
                             .background(
                                 color = if (selected) MaterialTheme.colorScheme.primary else Color.Transparent,
-                                shape = RoundedCornerShape(20.dp)
+                                shape = RoundedCornerShape(24.dp)
                             )
                             .clickable { type = t }
                             .padding(horizontal = 16.dp),
@@ -106,9 +106,9 @@ fun AddTransactionScreen(
                     ) {
                         Text(
                             text = label,
-                            color = if (selected) Color.White else Color.Gray,
+                            color = if (selected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant,
                             fontWeight = FontWeight.Bold,
-                            style = MaterialTheme.typography.bodyMedium
+                            style = MaterialTheme.typography.bodyLarge
                         )
                     }
                 }

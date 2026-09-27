@@ -44,7 +44,7 @@ fun SavingsScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF8F9FA))
+            .background(MaterialTheme.colorScheme.background)
             .verticalScroll(rememberScrollState())
     ) {
         // Header
@@ -160,30 +160,30 @@ fun TargetSavingItem(
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Box(modifier = Modifier.size(40.dp).background(Color(0xFFE9F7F2), RoundedCornerShape(8.dp)), contentAlignment = Alignment.Center) {
+                Box(modifier = Modifier.size(40.dp).background(IncomeGreen.copy(alpha = 0.1f), RoundedCornerShape(8.dp)), contentAlignment = Alignment.Center) {
                     Icon(icon, contentDescription = null, tint = IncomeGreen, modifier = Modifier.size(20.dp))
                 }
                 Spacer(modifier = Modifier.width(12.dp))
                 Column(modifier = Modifier.weight(1f)) {
-                    Text(text = title, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Bold)
+                    Text(text = title, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
                     Row {
                         Text(text = formatter.format(current), style = MaterialTheme.typography.bodySmall, color = IncomeGreen, fontWeight = FontWeight.Bold)
-                        Text(text = " / ${formatter.format(target)}", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+                        Text(text = " / ${formatter.format(target)}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                 }
-                Text(text = "${(progress * 100).toInt()}%", style = MaterialTheme.typography.labelLarge, color = Color.Gray)
+                Text(text = "${(progress * 100).toInt()}%", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
             Spacer(modifier = Modifier.height(12.dp))
             LinearProgressIndicator(
                 progress = { progress },
                 modifier = Modifier.fillMaxWidth().height(8.dp).clip(CircleShape),
                 color = IncomeGreen,
-                trackColor = Color(0xFFE9ECEF),
+                trackColor = MaterialTheme.colorScheme.surfaceVariant,
                 strokeCap = StrokeCap.Round
             )
         }
@@ -203,7 +203,7 @@ fun RiwayatSavingItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
-            modifier = Modifier.size(40.dp).background(if (isAdd) Color(0xFFE9F7F2) else Color(0xFFFFEEEE), CircleShape),
+            modifier = Modifier.size(40.dp).background(if (isAdd) IncomeGreen.copy(alpha = 0.1f) else ExpenseRed.copy(alpha = 0.1f), CircleShape),
             contentAlignment = Alignment.Center
         ) {
             Icon(
@@ -215,8 +215,8 @@ fun RiwayatSavingItem(
         }
         Spacer(modifier = Modifier.width(12.dp))
         Column(modifier = Modifier.weight(1f)) {
-            Text(text = title, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
-            Text(text = date, style = MaterialTheme.typography.labelSmall, color = Color.Gray)
+            Text(text = title, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onSurface)
+            Text(text = date, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
         Text(
             text = (if (isAdd) "+ " else "- ") + formatter.format(amount).replace("Rp", "Rp "),

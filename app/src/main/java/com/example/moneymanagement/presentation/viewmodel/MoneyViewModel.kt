@@ -23,6 +23,9 @@ class MoneyViewModel(
     private val _isLoading = mutableStateOf(true)
     val isLoading: State<Boolean> = _isLoading
 
+    private val _isDarkMode = mutableStateOf(false)
+    val isDarkMode: State<Boolean> = _isDarkMode
+
     private val _transactions = mutableStateOf<List<Transaction>>(emptyList())
     val transactions: List<Transaction> get() = _transactions.value
 
@@ -122,6 +125,10 @@ class MoneyViewModel(
         viewModelScope.launch {
             useCases.clearData()
         }
+    }
+
+    fun toggleDarkMode() {
+        _isDarkMode.value = !_isDarkMode.value
     }
 }
 

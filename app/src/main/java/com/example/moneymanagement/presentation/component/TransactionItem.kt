@@ -73,12 +73,13 @@ fun TransactionItem(transaction: Transaction, formatter: NumberFormat) {
                 text = transaction.description, 
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.Bold,
-                maxLines = 1
+                maxLines = 1,
+                color = MaterialTheme.colorScheme.onSurface
             )
             Text(
                 text = if (transaction.type == TransactionType.Saving) "Tabungan" else transaction.category.categoryName,
                 style = MaterialTheme.typography.bodySmall,
-                color = Color.Gray
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
 
@@ -88,12 +89,12 @@ fun TransactionItem(transaction: Transaction, formatter: NumberFormat) {
                        formatter.format(transaction.amount).replace("Rp", "Rp "),
                 color = amountColor,
                 style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.ExtraBold
             )
             Text(
                 text = timeFormatter.format(transaction.date),
                 style = MaterialTheme.typography.labelSmall,
-                color = Color.Gray
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }

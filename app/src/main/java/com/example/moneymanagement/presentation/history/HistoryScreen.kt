@@ -65,7 +65,7 @@ fun HistoryScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF8F9FA))
+            .background(MaterialTheme.colorScheme.background)
     ) {
         // Top Header
         Row(
@@ -133,8 +133,8 @@ fun TransactionChip(label: String, selected: Boolean, onClick: () -> Unit) {
     Surface(
         onClick = onClick,
         shape = MaterialTheme.shapes.extraLarge,
-        color = if (selected) MaterialTheme.colorScheme.primary else Color.White,
-        border = if (selected) null else androidx.compose.foundation.BorderStroke(1.dp, Color.LightGray),
+        color = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface,
+        border = if (selected) null else androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)),
         modifier = Modifier.height(40.dp)
     ) {
         Box(
@@ -143,7 +143,7 @@ fun TransactionChip(label: String, selected: Boolean, onClick: () -> Unit) {
         ) {
             Text(
                 text = label,
-                color = if (selected) Color.White else Color.Gray,
+                color = if (selected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant,
                 style = MaterialTheme.typography.labelLarge
             )
         }

@@ -267,18 +267,18 @@ private fun LineChart(
             drawPath(
                 path = path,
                 color = color,
-                style = Stroke(width = 6f, cap = StrokeCap.Round)
+                style = Stroke(width = 10f, cap = StrokeCap.Round)
             )
             
             for (i in points.indices) {
                 drawCircle(
                     color = color,
-                    radius = 8f,
+                    radius = 10f,
                     center = androidx.compose.ui.geometry.Offset(i * spacing, height - (points[i] * height))
                 )
                 drawCircle(
                     color = Color.White,
-                    radius = 4f,
+                    radius = 5f,
                     center = androidx.compose.ui.geometry.Offset(i * spacing, height - (points[i] * height))
                 )
             }

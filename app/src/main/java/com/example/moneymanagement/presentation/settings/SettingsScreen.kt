@@ -23,6 +23,8 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun SettingsScreen(
+    isDarkMode: Boolean = false,
+    onToggleDarkMode: () -> Unit = {},
     onImportClick: () -> Unit = {},
     onExportClick: () -> Unit = {},
     onClearClick: () -> Unit = {}
@@ -30,7 +32,7 @@ fun SettingsScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF8F9FA))
+            .background(MaterialTheme.colorScheme.background)
             .verticalScroll(rememberScrollState())
     ) {
         // Header Pengaturan
@@ -43,7 +45,8 @@ fun SettingsScreen(
             Text(
                 text = "Pengaturan",
                 style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onBackground
             )
         }
 
@@ -52,30 +55,35 @@ fun SettingsScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
-            shape = RoundedCornerShape(16.dp),
-            colors = CardDefaults.cardColors(containerColor = Color.White),
+            shape = RoundedCornerShape(24.dp),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
         ) {
             Row(
-                modifier = Modifier.padding(16.dp),
+                modifier = Modifier.padding(20.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Box(
                     modifier = Modifier
-                        .size(60.dp)
+                        .size(64.dp)
                         .clip(CircleShape)
-                        .background(Color(0xFFE9ECEF)),
+                        .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(text = "A", style = MaterialTheme.typography.headlineSmall, color = Color(0xFF6C757D))
+                    Text(
+                        text = "A", 
+                        style = MaterialTheme.typography.headlineMedium, 
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
                 Spacer(modifier = Modifier.width(16.dp))
                 Column {
-                    Text(text = "Andi Pratama", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                    Text(text = "andi@email.com", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+                    Text(text = "Andi Pratama", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
+                    Text(text = "andi@email.com", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
                 Spacer(modifier = Modifier.weight(1f))
-                Icon(Icons.Default.ChevronRight, contentDescription = null, tint = Color.Gray)
+                Icon(Icons.Default.ChevronRight, contentDescription = null, tint = MaterialTheme.colorScheme.outline)
             }
         }
 
@@ -98,6 +106,16 @@ fun SettingsScreen(
         }
 
         SettingsGroup(title = "Aplikasi") {
+            SettingsItem(
+                icon = if (isDarkMode) Icons.Default.DarkMode else Icons.Default.LightMode, 
+                title = "Mode Malam",
+                trailing = {
+                    Switch(
+                        checked = isDarkMode,
+                        onCheckedChange = { onToggleDarkMode() }
+                    )
+                }
+            )
             SettingsItem(icon = Icons.Default.Palette, title = "Tampilan")
             SettingsItem(icon = Icons.Default.Help, title = "Bantuan & Dukungan")
             SettingsItem(icon = Icons.Default.Info, title = "Tentang Aplikasi")
@@ -118,8 +136,8 @@ private fun SettingsGroup(title: String, content: @Composable ColumnScope.() -> 
         )
         Card(
             modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(16.dp),
-            colors = CardDefaults.cardColors(containerColor = Color.White),
+            shape = RoundedCornerShape(24.dp),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
             elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
         ) {
             Column(content = content)
@@ -132,6 +150,7 @@ private fun SettingsItem(
     icon: ImageVector,
     title: String,
     titleColor: Color = Color.Unspecified,
+    trailing: @Composable (() -> Unit)? = null,
     onClick: () -> Unit = {}
 ) {
     Row(
@@ -144,15 +163,28 @@ private fun SettingsItem(
         Box(
             modifier = Modifier
                 .size(36.dp)
-                .background(Color(0xFFF1F3F5), RoundedCornerShape(8.dp)),
+                .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(8.dp)),
             contentAlignment = Alignment.Center
         ) {
-            Icon(icon, contentDescription = null, tint = if (titleColor == MaterialTheme.colorScheme.error) titleColor else Color(0xFF495057), modifier = Modifier.size(20.dp))
+            Icon(
+                icon, 
+                contentDescription = null, 
+                tint = if (titleColor == MaterialTheme.colorScheme.error) titleColor else MaterialTheme.colorScheme.onSurfaceVariant, 
+                modifier = Modifier.size(20.dp)
+            )
         }
         Spacer(modifier = Modifier.width(16.dp))
-        Text(text = title, style = MaterialTheme.typography.bodyLarge, color = titleColor)
+        Text(
+            text = title, 
+            style = MaterialTheme.typography.bodyLarge, 
+            color = if (titleColor != Color.Unspecified) titleColor else MaterialTheme.colorScheme.onSurface
+        )
         Spacer(modifier = Modifier.weight(1f))
-        Icon(Icons.Default.ChevronRight, contentDescription = null, tint = Color(0xFFCED4DA), modifier = Modifier.size(20.dp))
+        if (trailing != null) {
+            trailing()
+        } else {
+            Icon(Icons.Default.ChevronRight, contentDescription = null, tint = MaterialTheme.colorScheme.outline, modifier = Modifier.size(20.dp))
+        }
     }
 }
 

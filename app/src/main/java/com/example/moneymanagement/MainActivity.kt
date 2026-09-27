@@ -53,7 +53,9 @@ class MainActivity : ComponentActivity() {
                 viewModel.isLoading.value
             }
 
-            com.example.moneymanagement.ui.theme.MoneyManagementTheme {
+            com.example.moneymanagement.ui.theme.MoneyManagementTheme(
+                darkTheme = viewModel.isDarkMode.value
+            ) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
@@ -66,6 +68,8 @@ class MainActivity : ComponentActivity() {
                         totalExpense = viewModel.totalExpense,
                         transactions = viewModel.transactions,
                         savings = viewModel.saving,
+                        isDarkMode = viewModel.isDarkMode.value,
+                        onToggleDarkMode = viewModel::toggleDarkMode,
                         onAddTransaction = viewModel::addTransaction,
                         onAddSaving = viewModel::addSaving,
                         onUpdateSaving = viewModel::updateSavingAmount,

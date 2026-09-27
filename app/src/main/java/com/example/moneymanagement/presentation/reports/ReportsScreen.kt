@@ -98,7 +98,7 @@ fun ReportsScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF8F9FA))
+            .background(MaterialTheme.colorScheme.background)
             .verticalScroll(rememberScrollState())
     ) {
         // Header
@@ -149,16 +149,16 @@ fun ReportsScreen(
                 calendarState = newCal
                 selectedRange = "Bulan Ini" // Switch to Bulan Ini mode if navigating
             }) {
-                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, modifier = Modifier.size(20.dp), tint = Color.Gray)
+                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, modifier = Modifier.size(20.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
             }
-            Text(text = periodText, modifier = Modifier.padding(horizontal = 24.dp), style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.SemiBold)
+            Text(text = periodText, modifier = Modifier.padding(horizontal = 24.dp), style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onSurface)
             IconButton(onClick = { 
                 val newCal = calendarState.clone() as Calendar
                 newCal.add(Calendar.MONTH, 1)
                 calendarState = newCal
                 selectedRange = "Bulan Ini"
             }) {
-                Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, modifier = Modifier.size(20.dp), tint = Color.Gray)
+                Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, modifier = Modifier.size(20.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
 
@@ -285,13 +285,18 @@ fun ReportsScreen(
 fun TimeRangeChip(label: String, selected: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
     Surface(
         onClick = onClick,
-        shape = RoundedCornerShape(12.dp),
-        color = if (selected) MaterialTheme.colorScheme.primary else Color.White,
-        border = if (selected) null else androidx.compose.foundation.BorderStroke(1.dp, Color.LightGray),
-        modifier = modifier.height(36.dp)
+        shape = RoundedCornerShape(20.dp),
+        color = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface,
+        border = if (selected) null else androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)),
+        modifier = modifier.height(40.dp)
     ) {
-        Box(contentAlignment = Alignment.Center) {
-            Text(text = label, color = if (selected) Color.White else Color.Gray, style = MaterialTheme.typography.labelMedium)
+        Box(contentAlignment = Alignment.Center, modifier = Modifier.padding(horizontal = 12.dp)) {
+            Text(
+                text = label, 
+                color = if (selected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant, 
+                style = MaterialTheme.typography.labelLarge,
+                fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium
+            )
         }
     }
 }
@@ -308,7 +313,7 @@ fun ReportSummaryCard(
     Card(
         modifier = modifier,
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(modifier = Modifier.padding(12.dp)) {
@@ -316,8 +321,8 @@ fun ReportSummaryCard(
                 Icon(icon, contentDescription = null, tint = color, modifier = Modifier.size(14.dp))
             }
             Spacer(modifier = Modifier.height(8.dp))
-            Text(text = title, style = MaterialTheme.typography.labelSmall, color = Color.Gray)
-            Text(text = formatter.format(amount), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+            Text(text = title, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(text = formatter.format(amount), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
         }
     }
 }
@@ -362,17 +367,17 @@ private fun BarChart(transactions: List<Transaction>) {
                     color = IncomeGreen,
                     topLeft = androidx.compose.ui.geometry.Offset(xInc, canvasHeight - hInc),
                     size = androidx.compose.ui.geometry.Size(barWidth, hInc),
-                    cornerRadius = androidx.compose.ui.geometry.CornerRadius(4f)
+                    cornerRadius = androidx.compose.ui.geometry.CornerRadius(10f)
                 )
                 
-                val xExp = xInc + barWidth + 4f
+                val xExp = xInc + barWidth + 6f
                 val hExp = (amounts.second.toFloat() / maxVal) * canvasHeight
                 
                 drawRoundRect(
                     color = ExpenseRed,
                     topLeft = androidx.compose.ui.geometry.Offset(xExp, canvasHeight - hExp),
                     size = androidx.compose.ui.geometry.Size(barWidth, hExp),
-                    cornerRadius = androidx.compose.ui.geometry.CornerRadius(4f)
+                    cornerRadius = androidx.compose.ui.geometry.CornerRadius(10f)
                 )
             }
         }
