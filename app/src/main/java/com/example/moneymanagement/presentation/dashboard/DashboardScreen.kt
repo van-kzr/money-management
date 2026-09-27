@@ -34,7 +34,7 @@ import com.example.moneymanagement.domain.model.Category
 import com.example.moneymanagement.domain.model.Saving
 import com.example.moneymanagement.domain.model.Transaction
 import com.example.moneymanagement.domain.model.TransactionType
-import com.example.moneymanagement.presentation.component.AddTransactionDialog
+import com.example.moneymanagement.presentation.component.NominalText
 import com.example.moneymanagement.presentation.history.HistoryScreen
 import com.example.moneymanagement.presentation.reports.ReportsScreen
 import com.example.moneymanagement.presentation.savings.SavingsScreen
@@ -45,6 +45,16 @@ import java.text.NumberFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.foundation.basicMarquee
+import androidx.compose.foundation.MarqueeAnimationMode
+import androidx.compose.foundation.MarqueeSpacing
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.text.rememberTextMeasurer
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -111,10 +121,7 @@ fun DashboardScreen(
                     icon = { Icon(Icons.Default.Savings, contentDescription = null) },
                     label = { Text("Tabungan") }
                 )
-                
-                // Spacing for FAB
-                Spacer(modifier = Modifier.weight(0.1f))
-                
+
                 NavigationBarItem(
                     selected = selectedTab == 3,
                     onClick = { selectedTab = 3 },
@@ -309,16 +316,16 @@ private fun HomeContent(
             .verticalScroll(rememberScrollState())
     ) {
         HeaderSection()
-        
-        Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+        Spacer(modifier = Modifier.height(8.dp))
+        Column(modifier = Modifier.padding(horizontal = 12.dp)) {
             BalanceCard(totalBalance, availableBalance, savingBalance, formatter)
             
             Spacer(modifier = Modifier.height(8.dp))
             
             Button(
                 onClick = onAddTransactionClick,
-                modifier = Modifier.fillMaxWidth().height(56.dp),
-                shape = RoundedCornerShape(16.dp),
+                modifier = Modifier.fillMaxWidth().height(50.dp),
+                shape = RoundedCornerShape(12.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                 elevation = ButtonDefaults.buttonElevation(defaultElevation = 2.dp)
             ) {
@@ -327,7 +334,7 @@ private fun HomeContent(
                 Text("Tambah Transaksi", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
             MonthYearSelector(
                 selectedMonth = selectedMonth,
@@ -335,15 +342,15 @@ private fun HomeContent(
                 onMonthYearChange = onMonthYearChange
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(12.dp))
             
             MonthlySummarySection(monthlyIncome, monthlyExpense, formatter)
             
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(12.dp))
             
             ExpenseCategorySection(filteredTransactions, formatter, onSeeAllClick)
             
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(12.dp))
         }
     }
 }
@@ -365,7 +372,7 @@ private fun MonthYearSelector(
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(16.dp))
             .clickable { expanded = true }
-            .padding(16.dp),
+            .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -374,9 +381,6 @@ private fun MonthYearSelector(
             Spacer(modifier = Modifier.width(12.dp))
             Text(
                 text = "Periode: ${months[selectedMonth]} $selectedYear",
-                style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSurface
             )
         }
         Icon(Icons.Default.ArrowDropDown, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -414,7 +418,7 @@ private fun HeaderSection() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(180.dp)
+            .height(110.dp)
             .background(
                 color = MaterialTheme.colorScheme.primary,
                 shape = RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp)
@@ -434,7 +438,7 @@ private fun HeaderSection() {
             ) {
                 Icon(Icons.Default.Eco, contentDescription = null, tint = Color.White, modifier = Modifier.size(32.dp))
             }
-            Spacer(modifier = Modifier.width(12.dp))
+            Spacer(modifier = Modifier.width(8.dp))
             Column {
                 Text(
                     text = "Selamat datang di",
@@ -472,13 +476,13 @@ private fun BalanceCard(
     
     Card(
         modifier = Modifier
-            .fillMaxWidth()
-            .offset(y = (-40).dp),
-        shape = RoundedCornerShape(24.dp),
+            .fillMaxWidth(),
+//            .offset(y = (40).dp),
+        shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(modifier = Modifier.padding(24.dp)) {
+        Column(modifier = Modifier.padding(12.dp)) {
             Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
                 Text(text = "Total Saldo", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 IconButton(onClick = { isVisible = !isVisible }, modifier = Modifier.size(24.dp)) {
@@ -490,16 +494,15 @@ private fun BalanceCard(
                     )
                 }
             }
-            Text(
-                text = if (isVisible) formatter.format(totalBalance) else "Rp ••••••••",
-                style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.ExtraBold,
+            NominalText(
+                amountText = if (isVisible) formatter.format(totalBalance).replace("Rp", "Rp ") else "Rp ••••••••",
+                style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.ExtraBold),
                 color = MaterialTheme.colorScheme.onSurface
             )
             
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(12.dp))
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(12.dp))
             
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 BalanceItem(
@@ -510,7 +513,7 @@ private fun BalanceCard(
                     isVisible = isVisible,
                     modifier = Modifier.weight(1f)
                 )
-                VerticalDivider(modifier = Modifier.height(40.dp).padding(horizontal = 12.dp), color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
+                VerticalDivider(modifier = Modifier.height(40.dp).padding(horizontal = 8.dp), color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
                 BalanceItem(
                     icon = Icons.Default.Savings,
                     label = "Tabungan",
@@ -533,20 +536,54 @@ private fun BalanceItem(
     isVisible: Boolean,
     modifier: Modifier = Modifier
 ) {
-    Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
+    val amountText = if (isVisible) {
+        formatter.format(amount).replace("Rp", "Rp ")
+    } else {
+        "Rp ••••"
+    }
+
+    val textStyle = MaterialTheme.typography.bodyMedium.copy(
+        fontWeight = FontWeight.Bold
+    )
+
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Box(
-            modifier = Modifier.size(36.dp).background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f), CircleShape),
+            modifier = Modifier
+                .size(36.dp)
+                .background(
+                    MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
+                    CircleShape
+                ),
             contentAlignment = Alignment.Center
         ) {
-            Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp))
+            Icon(
+                icon,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(18.dp)
+            )
         }
-        Spacer(modifier = Modifier.width(12.dp))
-        Column {
-            Text(text = label, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+
+        Spacer(modifier = Modifier.width(8.dp))
+
+        Column(
+            modifier = Modifier
+                .weight(1f)
+        ) {
             Text(
-                text = if (isVisible) formatter.format(amount).replace("Rp", "Rp ") else "Rp ••••",
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Bold,
+                text = label,
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+
+            NominalText(
+                amountText = amountText,
+                style = textStyle,
                 color = MaterialTheme.colorScheme.onSurface
             )
         }
@@ -560,9 +597,9 @@ private fun MonthlySummarySection(
     formatter: NumberFormat
 ) {
     Column {
-        Text(text = "Ringkasan Bulan Ini", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+        Text(text = "Ringkasan Bulan Ini")
         
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(8.dp))
         
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
             SummaryCard(
@@ -599,29 +636,58 @@ private fun SummaryCard(
 ) {
     Card(
         modifier = modifier,
-        shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        ),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(modifier = Modifier.padding(20.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
                 Box(
-                    modifier = Modifier.size(28.dp).background(color.copy(alpha = 0.1f), CircleShape),
+                    modifier = Modifier
+                        .size(16.dp)
+                        .background(
+                            color.copy(alpha = 0.1f),
+                            CircleShape
+                        ),
                     contentAlignment = Alignment.Center
                 ) {
-                    Icon(icon, contentDescription = null, tint = color, modifier = Modifier.size(16.dp))
+                    Icon(
+                        icon,
+                        contentDescription = null,
+                        tint = color,
+                        modifier = Modifier.size(16.dp)
+                    )
                 }
+
                 Spacer(modifier = Modifier.width(10.dp))
-                Text(text = title, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
+
             Spacer(modifier = Modifier.height(12.dp))
-            Text(
-                text = formatter.format(amount).replace("Rp", "Rp "), 
-                style = MaterialTheme.typography.titleMedium, 
-                fontWeight = FontWeight.ExtraBold,
+
+            NominalText(
+                amountText = formatter.format(amount).replace("Rp", "Rp "),
+                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.ExtraBold),
                 color = MaterialTheme.colorScheme.onSurface
             )
+
             Spacer(modifier = Modifier.height(4.dp))
+
             Text(
                 text = "$percentage dari Agustus",
                 style = MaterialTheme.typography.labelSmall,
@@ -649,7 +715,7 @@ private fun ExpenseCategorySection(
 
     Column {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-            Text(text = "Pengeluaran Bulan Ini", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
+            Text(text = "Pengeluaran Bulan Ini", color = MaterialTheme.colorScheme.onBackground)
             Text(
                 text = "Lihat Semua", 
                 style = MaterialTheme.typography.labelMedium, 
@@ -659,20 +725,20 @@ private fun ExpenseCategorySection(
             )
         } 
         
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(8.dp))
         
         Card(
             modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(24.dp),
+            shape = RoundedCornerShape(12.dp),
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
             elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
         ) {
-            Column(modifier = Modifier.padding(20.dp)) {
+            Column(modifier = Modifier.padding(12.dp)) {
                 expenseCategories.take(5).forEachIndexed { index, (category, amount) ->
                     val percentage = if (totalExpense > 0) (amount / totalExpense).toFloat() else 0f
                     val percentageText = (percentage * 100).toInt()
                     
-                    Column(modifier = Modifier.padding(vertical = 10.dp)) {
+                    Column(modifier = Modifier.padding(vertical = 0.dp)) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Box(
                                 modifier = Modifier.size(36.dp).background(category.color.copy(alpha = 0.1f), CircleShape),
@@ -687,7 +753,11 @@ private fun ExpenseCategorySection(
                             }
                             Spacer(modifier = Modifier.width(16.dp))
                             Text(text = category.categoryName, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Medium, color = MaterialTheme.colorScheme.onSurface, modifier = Modifier.weight(1f))
-                            Text(text = formatter.format(amount).replace("Rp", "Rp "), style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
+                            NominalText(
+                                amountText = formatter.format(amount).replace("Rp", "Rp "),
+                                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(text = "$percentageText%", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }

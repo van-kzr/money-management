@@ -84,12 +84,11 @@ fun TransactionItem(transaction: Transaction, formatter: NumberFormat) {
         }
 
         Column(horizontalAlignment = Alignment.End) {
-            Text(
-                text = (if (transaction.type == TransactionType.INCOME || transaction.type == TransactionType.Saving) "+ " else "- ") + 
-                       formatter.format(transaction.amount).replace("Rp", "Rp "),
-                color = amountColor,
-                style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.ExtraBold
+            NominalText(
+                amountText = (if (transaction.type == TransactionType.INCOME || transaction.type == TransactionType.Saving) "+ " else "- ") + 
+                             formatter.format(transaction.amount).replace("Rp", "Rp "),
+                style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.ExtraBold),
+                color = amountColor
             )
             Text(
                 text = timeFormatter.format(transaction.date),

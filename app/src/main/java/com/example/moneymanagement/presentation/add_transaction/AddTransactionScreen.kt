@@ -64,6 +64,7 @@ fun AddTransactionScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
             .verticalScroll(rememberScrollState())
+            .padding(vertical = 26.dp)
     ) {
         // Header
         Row(

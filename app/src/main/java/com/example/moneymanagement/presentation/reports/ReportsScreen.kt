@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import com.example.moneymanagement.domain.model.Category
 import com.example.moneymanagement.domain.model.Transaction
 import com.example.moneymanagement.domain.model.TransactionType
+import com.example.moneymanagement.presentation.component.NominalText
 import com.example.moneymanagement.presentation.component.TransactionItem
 import com.example.moneymanagement.ui.theme.IncomeGreen
 import com.example.moneymanagement.ui.theme.ExpenseRed
@@ -236,7 +237,11 @@ fun ReportsScreen(
                         DonutChart(reportTransactions)
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Text(text = "Total", style = MaterialTheme.typography.labelSmall, color = Color.Gray)
-                            Text(text = formatter.format(totalExp).replace("Rp", "Rp\n"), textAlign = TextAlign.Center, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                            NominalText(
+                                amountText = formatter.format(totalExp).replace("Rp", "Rp "),
+                                style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
                         }
                     }
                     Spacer(modifier = Modifier.width(24.dp))
@@ -322,7 +327,11 @@ fun ReportSummaryCard(
             }
             Spacer(modifier = Modifier.height(8.dp))
             Text(text = title, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            Text(text = formatter.format(amount), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
+            NominalText(
+                amountText = formatter.format(amount).replace("Rp", "Rp "),
+                style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
+                color = MaterialTheme.colorScheme.onSurface
+            )
         }
     }
 }

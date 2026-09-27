@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.sp
 import com.example.moneymanagement.domain.model.Saving
 import com.example.moneymanagement.domain.model.Transaction
 import com.example.moneymanagement.domain.model.TransactionType
+import com.example.moneymanagement.presentation.component.NominalText
 import com.example.moneymanagement.ui.theme.IncomeGreen
 import com.example.moneymanagement.ui.theme.ExpenseRed
 import java.text.NumberFormat
@@ -72,7 +73,11 @@ fun SavingsScreen(
                 
                 Spacer(modifier = Modifier.height(12.dp))
                 Text(text = "Total Tabungan", style = MaterialTheme.typography.bodySmall, color = Color.White.copy(alpha = 0.8f))
-                Text(text = formatter.format(totalSaving), style = MaterialTheme.typography.headlineMedium, color = Color.White, fontWeight = FontWeight.Bold)
+                NominalText(
+                    amountText = formatter.format(totalSaving).replace("Rp", "Rp "),
+                    style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
+                    color = Color.White
+                )
                 Spacer(modifier = Modifier.height(24.dp))
             }
         }
@@ -171,9 +176,17 @@ fun TargetSavingItem(
                 Spacer(modifier = Modifier.width(12.dp))
                 Column(modifier = Modifier.weight(1f)) {
                     Text(text = title, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
-                    Row {
-                        Text(text = formatter.format(current), style = MaterialTheme.typography.bodySmall, color = IncomeGreen, fontWeight = FontWeight.Bold)
-                        Text(text = " / ${formatter.format(target)}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        NominalText(
+                            amountText = formatter.format(current).replace("Rp", "Rp "),
+                            style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold),
+                            color = IncomeGreen
+                        )
+                        NominalText(
+                            amountText = " / ${formatter.format(target).replace("Rp", "Rp ")}",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
                     }
                 }
                 Text(text = "${(progress * 100).toInt()}%", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -218,10 +231,9 @@ fun RiwayatSavingItem(
             Text(text = title, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onSurface)
             Text(text = date, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
-        Text(
-            text = (if (isAdd) "+ " else "- ") + formatter.format(amount).replace("Rp", "Rp "),
-            style = MaterialTheme.typography.bodyMedium,
-            fontWeight = FontWeight.Bold,
+        NominalText(
+            amountText = (if (isAdd) "+ " else "- ") + formatter.format(amount).replace("Rp", "Rp "),
+            style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
             color = if (isAdd) IncomeGreen else ExpenseRed
         )
     }

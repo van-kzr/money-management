@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import com.example.moneymanagement.domain.model.Category
 import com.example.moneymanagement.domain.model.Transaction
 import com.example.moneymanagement.domain.model.TransactionType
+import com.example.moneymanagement.presentation.component.NominalText
 import com.example.moneymanagement.ui.theme.IncomeGreen
 import com.example.moneymanagement.ui.theme.ExpenseRed
 import java.text.NumberFormat
@@ -140,10 +141,10 @@ fun StatisticsScreen(
 
         // Total Summary
         Column(modifier = Modifier.padding(horizontal = 16.dp)) {
-            Text(
-                text = formatter.format(totalAmount).replace("Rp", "Rp "), 
-                style = MaterialTheme.typography.headlineMedium, 
-                fontWeight = FontWeight.Bold
+            NominalText(
+                amountText = formatter.format(totalAmount).replace("Rp", "Rp "),
+                style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
+                color = MaterialTheme.colorScheme.onSurface
             )
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
@@ -308,7 +309,11 @@ private fun SourceProgressItem(
             Box(modifier = Modifier.size(10.dp).background(color, CircleShape))
             Spacer(modifier = Modifier.width(12.dp))
             Text(text = label, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f))
-            Text(text = formatter.format(amount).replace("Rp", "Rp "), style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold)
+            NominalText(
+                amountText = formatter.format(amount).replace("Rp", "Rp "),
+                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
+                color = MaterialTheme.colorScheme.onSurface
+            )
         }
         Spacer(modifier = Modifier.height(8.dp))
         LinearProgressIndicator(

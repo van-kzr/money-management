@@ -354,11 +354,10 @@ private fun PreviewAndValidationStep(
                             Column(modifier = Modifier.padding(12.dp)) {
                                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                                     Text(text = item.description, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodyMedium)
-                                    Text(
-                                        text = currencyFormatter.format(item.amount).replace("Rp", "Rp "),
-                                        fontWeight = FontWeight.Bold,
-                                        color = if (item.type == TransactionType.INCOME) Color(0xFF4CAF50) else Color.Red,
-                                        style = MaterialTheme.typography.bodyMedium
+                                    NominalText(
+                                        amountText = currencyFormatter.format(item.amount).replace("Rp", "Rp "),
+                                        style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
+                                        color = if (item.type == TransactionType.INCOME) Color(0xFF4CAF50) else Color.Red
                                     )
                                 }
                                 Spacer(modifier = Modifier.height(4.dp))

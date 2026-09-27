@@ -56,10 +56,10 @@ fun SavingItem(saving: Saving, formatter: NumberFormat) {
                 )
             }
 
-            Text(
-                text = formatter.format(saving.amount),
-                color = MaterialTheme.colorScheme.tertiary,
-                fontWeight = FontWeight.Bold
+            NominalText(
+                amountText = formatter.format(saving.amount).replace("Rp", "Rp "),
+                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
+                color = MaterialTheme.colorScheme.tertiary
             )
         }
     }

@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.sp
 import com.example.moneymanagement.domain.model.Category
 import com.example.moneymanagement.domain.model.Transaction
 import com.example.moneymanagement.domain.model.TransactionType
+import com.example.moneymanagement.presentation.component.NominalText
 import com.example.moneymanagement.ui.theme.IncomeGreen
 import com.example.moneymanagement.ui.theme.ExpenseRed
 import java.text.NumberFormat
@@ -96,11 +97,10 @@ fun TransactionDetailScreen(
                 
                 Spacer(modifier = Modifier.height(24.dp))
                 
-                Text(
-                    text = (if (transaction.type == TransactionType.INCOME) "+ " else "- ") + 
-                           formatter.format(transaction.amount).replace("Rp", "Rp "),
-                    style = MaterialTheme.typography.headlineLarge,
-                    fontWeight = FontWeight.ExtraBold,
+                NominalText(
+                    amountText = (if (transaction.type == TransactionType.INCOME) "+ " else "- ") + 
+                                 formatter.format(transaction.amount).replace("Rp", "Rp "),
+                    style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.ExtraBold),
                     color = amountColor
                 )
                 
